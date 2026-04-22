@@ -1,49 +1,187 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Advocate AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legal AI PRO MAX</title>
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="style.css">
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
+  color: white;
+  overflow-x: hidden;
+}
+
+/* Glass UI */
+.glass {
+  backdrop-filter: blur(15px);
+  background: rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 20px;
+  margin: 20px;
+}
+
+/* Neon Button */
+button {
+  background: linear-gradient(45deg, cyan, purple);
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* Chat box */
+#chatBox {
+  height: 300px;
+  overflow-y: auto;
+}
+
+/* Floating WhatsApp */
+.whatsapp {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 30px;
+}
+
+/* Animation */
+@keyframes float {
+  0% { transform: translateY(0px);}
+  50% { transform: translateY(-10px);}
+  100% { transform: translateY(0px);}
+}
+
+.hero {
+  text-align: center;
+  animation: float 3s infinite;
+}
+</style>
 </head>
 
 <body>
 
-<!-- 🔥 BACKGROUND + ADVOCATE -->
-<div class="bg"></div>
-<img src="advocate.png" id="advocate">
-
-<div class="container">
-
-  <h1>⚖️ ADVOCATE AI 🤖</h1>
-
-  <!-- CHAT -->
-  <div class="glass">
-    <div id="chatBox"></div>
-
-    <input id="input" placeholder="Ask legal question...">
-    <button onclick="send()">Send 🚀</button>
-  </div>
-
-  <!-- FIR -->
-  <div class="glass">
-    <h2>📄 FIR Generator</h2>
-
-    <input id="name" placeholder="Name">
-    <input id="father" placeholder="Father Name">
-    <input id="address" placeholder="Address">
-    <input id="accused" placeholder="Accused">
-    <input id="police" placeholder="Police Station">
-    <input id="date" placeholder="Date">
-    <textarea id="problem" placeholder="Problem"></textarea>
-
-    <button onclick="generateFIR()">Generate FIR</button>
-  </div>
-
+<div class="hero">
+  <h1>⚖️ Legal AI PRO MAX</h1>
+  <p>Advocate AI + Voice + FIR + WhatsApp Bot</p>
 </div>
 
-<!-- JS -->
-<script src="script.js"></script>
+<!-- LOGIN -->
+<div class="glass">
+  <h2>Login / Signup</h2>
+  <input id="username" placeholder="Username"><br><br>
+  <input id="password" placeholder="Password" type="password"><br><br>
+  <button onclick="signup()">Signup</button>
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- CHAT -->
+<div class="glass">
+  <h2>AI Chat</h2>
+  <div id="chatBox"></div>
+
+  <input id="msg" placeholder="Type message">
+  <button onclick="send()">Send</button>
+  <button onclick="voice()">🎤 Speak</button>
+</div>
+
+<!-- FIR -->
+<div class="glass">
+  <h2>FIR Generator</h2>
+  <input id="name" placeholder="Name"><br><br>
+  <input id="problem" placeholder="Problem"><br><br>
+  <button onclick="fir()">Generate FIR</button>
+</div>
+
+<!-- WhatsApp -->
+<a class="whatsapp" href="https://wa.me/" target="_blank">📱</a>
+
+<script>
+
+// ===== AUTH =====
+async function signup() {
+  let res = await fetch("/signup", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      username: username.value,
+      password: password.value
+    })
+  });
+  alert((await res.json()).message);
+}
+
+async function login() {
+  let res = await fetch("/login", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      username: username.value,
+      password: password.value
+    })
+  });
+  alert((await res.json()).message);
+}
+
+// ===== CHAT =====
+async function send() {
+  let text = msg.value;
+
+  addChat("You: " + text);
+
+  let res = await fetch("/chat", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ message: text })
+  });
+
+  let data = await res.json();
+  addChat("AI: " + data.reply);
+}
+
+function addChat(text) {
+  chatBox.innerHTML += "<p>"+text+"</p>";
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// ===== VOICE =====
+function voice() {
+  let rec = new webkitSpeechRecognition();
+  rec.lang = "en-IN";
+
+  rec.onresult = function(e) {
+    msg.value = e.results[0][0].transcript;
+    send();
+  }
+
+  rec.start();
+}
+
+// ===== FIR =====
+async function fir() {
+  let res = await fetch("/fir", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      name: document.getElementById("name").value,
+      problem: document.getElementById("problem").value
+    })
+  });
+
+  let data = await res.json();
+  alert(data.message);
+
+  if (data.download) {
+    window.open(data.download);
+  }
+}
+
+</script>
 
 </body>
 </html>
