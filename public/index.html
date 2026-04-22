@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Advocate AI</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- 🔥 BACKGROUND + ADVOCATE -->
+<div class="bg"></div>
+<img src="advocate.png" id="advocate">
+
+<div class="container">
+
+  <h1>⚖️ ADVOCATE AI 🤖</h1>
+
+  <!-- CHAT -->
+  <div class="glass">
+    <div id="chatBox"></div>
+
+    <input id="input" placeholder="Ask legal question...">
+    <button onclick="send()">Send 🚀</button>
+  </div>
+
+  <!-- FIR -->
+  <div class="glass">
+    <h2>📄 FIR Generator</h2>
+
+    <input id="name" placeholder="Name">
+    <input id="father" placeholder="Father Name">
+    <input id="address" placeholder="Address">
+    <input id="accused" placeholder="Accused">
+    <input id="police" placeholder="Police Station">
+    <input id="date" placeholder="Date">
+    <textarea id="problem" placeholder="Problem"></textarea>
+
+    <button onclick="generateFIR()">Generate FIR</button>
+  </div>
+
+</div>
+
+<!-- JS -->
+<script src="script.js"></script>
+
+</body>
+</html>
